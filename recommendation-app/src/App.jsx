@@ -16,7 +16,8 @@ export default function App() {
     setResults([]);
 
     try {
-      const res = await fetch('http://localhost:8000/api/recommend', {
+      // ✅ UPDATE THIS URL to your deployed Render backend
+      const res = await fetch('https://product-recommendation-lx37.onrender.com/api/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query }),
@@ -24,14 +25,14 @@ export default function App() {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.detail || `HTTP ${res.status}: Server returned an error`);
+        throw new Error(errData.detail || `HTTP ${res.status}: Server error`);
       }
 
       const data = await res.json();
-      console.log('✅ Backend Response:', data); // 🔍 Check browser console (F12)
+      console.log('✅ Backend Response:', data);
 
       if (!Array.isArray(data)) {
-        throw new Error('Unexpected response format from server');
+        throw new Error('Unexpected response format');
       }
 
       setResults(data);
@@ -46,8 +47,8 @@ export default function App() {
   return (
     <div className="serp-container">
       <header className="serp-header">
-        <h1>🌐 AI SERP Recommender</h1>
-        <p>Live web search + AI ranking. Try: "best headphones under $100", "gaming laptops 2024"</p>
+        <h1>🤖 AI Product Recommender</h1>
+        <p>Live web search + AI ranking. Try: "phones under $500", "best headphones", "gaming laptops"</p>
       </header>
 
       <form onSubmit={handleSearch} className="search-form">
@@ -69,25 +70,33 @@ export default function App() {
         {!loading && error && <div className="alert error">⚠️ {error}</div>}
 
         {!loading && !error && results.length === 0 && (
-          <p className="status-message empty">Enter a query above to see live AI-curated results.</p>
+          <p className="status-message empty">Enter a query above to see AI-curated results.</p>
         )}
 
         {!loading && results.map((item, i) => (
           <article key={i} className="serp-card">
             <a
-              href={item.url || '#'}
+              href={item.url && item.url.startsWith('http') ? item.url : '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="serp-title"
             >
               {item.title || 'Untitled Result'}
             </a>
-            <div className="serp-url">{item.url ? new URL(item.url).hostname : 'No URL'}</div>
+            <div className="serp-url">
+              {item.url && item.url.startsWith('http') 
+                ? new URL(item.url).hostname.replace('www.', '') 
+                : 'Local Result'}
+            </div>
             <p className="serp-snippet">{item.snippet || 'No description available.'}</p>
             <div className="ai-badge">🤖 AI Reason: {item.reason || 'Matched your query.'}</div>
           </article>
         ))}
       </section>
+
+      <footer className="dev-note">
+        💡 Built with React + FastAPI + Groq + Tavily. Keys secured server-side.
+      </footer>
     </div>
   );
 }
