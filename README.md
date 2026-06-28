@@ -4,6 +4,7 @@
 
 🔗 **Live Demo**: [https://product-recommendation-six.vercel.app](https://product-recommendation-six.vercel.app)
 
+❌ **NOTE** : AGENT API is DISABLED due to Model being decommissioned. Use different model.
 
 https://github.com/user-attachments/assets/f25041ad-d2a8-4179-a6e4-5b15534fb82c
 

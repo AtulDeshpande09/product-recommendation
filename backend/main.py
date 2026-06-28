@@ -95,7 +95,7 @@ Results: {json.dumps(search_results, ensure_ascii=False)}"""
                         "Content-Type": "application/json"
                     },
                     json={
-                        "model": "llama-3.1-8b-instant",
+                        #"model": "tool-calling-model",
                         "messages": [
                             {"role": "system", "content": "Return ONLY valid JSON. Never use markdown."},
                             {"role": "user", "content": prompt}
